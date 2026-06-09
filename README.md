@@ -27,6 +27,7 @@ Now for privesc, we must look at the contents of /etc/incron.d/legacy
 /var/spool/asterisk/sysadmin/dahdi_restart IN_CLOSE_WRITE /usr/sbin/sysadmin_dahdi_restart
 /usr/local/asterisk/ha_trigger IN_CLOSE_WRITE /usr/sbin/sysadmin_ha
 ```
+These are all incron instructions. They are watching the files on the right. IN_COLE_WRITE means that whn the file on the left is modifyied/updated incron'll trigger the file on the right.
 DAHDI (Digium/Asterisk Hardware Device Interface) is the Linux subsystem used by Asterisk to interact with telephony hardware and timing resources, and in many cases it requires root for running, it's worth exploring.
 Now let's read this file here: /usr/sbin/sysadmin_dahdi_restart
 ```bash
